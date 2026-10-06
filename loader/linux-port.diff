@@ -1,0 +1,108 @@
+# Linux port diff against upstream LEAGUE-OF-NINE/LimbusModLoader @ v1.8
+# Files already modified; platform_paths.py and run-linux.sh are NEW (shipped in full).
+# Apply with:  git apply loader/linux-port.diff
+
+--- a/modfolder.py
++++ b/modfolder.py
+@@ -1,8 +1,7 @@
+ import os
+ 
++from platform_paths import get_appdata
++
+ 
+ def get_mod_folder():
+-    if appdata := os.getenv("APPDATA"):
+-        return os.path.join(appdata, "LimbusCompanyMods")
+-    else:
+-        raise Exception("APPDATA not found")
++    return os.path.join(str(get_appdata()), "LimbusCompanyMods")
+--- a/patch.py
++++ b/patch.py
+@@ -12,6 +12,7 @@
+ from UnityPy.files import SerializedFile, BundleFile, ObjectReader
+ 
+ from compress import compress_lunartique_mod
++from platform_paths import get_appdata
+ 
+ import UnityPy
+ 
+@@ -26,7 +27,9 @@
+     raise ValueError("No BundleFile found in environment")
+ 
+ 
+-def bundle_data_paths(appdata: str = os.getenv("APPDATA")):
++def bundle_data_paths(appdata: str | None = None):
++    if appdata is None:
++        appdata = str(get_appdata())
+     cache_path = os.path.join(appdata, "../LocalLow/Unity/ProjectMoon_LimbusCompany/*/*/")
+     return map(os.path.normpath, glob.glob(cache_path))
+ 
+@@ -101,7 +104,7 @@
+     for f in bundle.files.values():
+         if not isinstance(f, SerializedFile):
+             logging.info("Expected serialized file but got a %s instead?? Skipped", type(f))
+-            return
++            continue
+ 
+         objects = f.objects
+         for modded_asset in os.listdir(mod_path):
+--- a/sound.py
++++ b/sound.py
+@@ -3,31 +3,32 @@
+ import os
+ import shutil
+ import time
+-import winreg
+ from threading import Thread
+ 
+ from modfolder import get_mod_folder
+-
+-
+-def get_steam_dir() -> str:
+-    try:
+-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam")
+-        steam_path, _ = winreg.QueryValueEx(key, "SteamPath")
+-        return os.path.normpath(steam_path)
+-    except FileNotFoundError:
+-        program_files = os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)")
+-        return os.path.join(program_files, "Steam")
++from platform_paths import find_game_dir, is_windows
+ 
+ 
+ def sound_folder() -> str:
+-    steam_dir = get_steam_dir()
+     return os.path.join(
+-        steam_dir, 
+-        r"steamapps\common\Limbus Company\LimbusCompany_Data\StreamingAssets\Assets\Sound\FMODBuilds\Desktop"
++        str(find_game_dir()),
++        "LimbusCompany_Data",
++        "StreamingAssets",
++        "Assets",
++        "Sound",
++        "FMODBuilds",
++        "Desktop",
+     )
+ 
++
+ def is_game_running() -> bool:
+-    """Checks the Windows task list to see if Limbus Company is running."""
++    """Only meaningful on Windows.
++
++    On Linux the loader runs the game with subprocess and stays alive until it exits,
++    so the monitor loop below is skipped there.
++    """
++    if not is_windows():
++        return False
+     try:
+         with os.popen('tasklist /FI "IMAGENAME eq LimbusCompany.exe"') as task:
+             return "LimbusCompany.exe" in task.read()
+@@ -49,6 +50,9 @@
+             
+         shutil.copyfile(sound_file, target)
+ 
++    if not is_windows():
++        return
++
+     for _ in range(30):
+         if is_game_running():
+             break

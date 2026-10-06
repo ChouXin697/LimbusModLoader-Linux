@@ -1,0 +1,20 @@
+# Dependencies for the Linux port.
+#
+# Same set as upstream `requirements-upstream.txt`, but the version pins are relaxed to the
+# versions that actually resolved and worked under Python 3.12 on Linux.
+#
+# Note: upstream pins `etcpak==0.9.8` because 0.9.9 crashed on import. The 0.9.15
+# line used here does not have that problem, but if you hit an etcpak import crash
+# on another Python version, drop back to 0.9.8.
+
+UnityPy>=1.25.0
+xxhash
+lz4
+Brotli
+etcpak
+fsspec
+packaging
+pillow
+pyfmodex
+tabulate
+texture2ddecoder>=1.0.5

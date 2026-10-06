@@ -1,0 +1,18 @@
+# virtualenvs
+venv/
+venv-linux/
+.venv/
+
+# python
+__pycache__/
+*.py[cod]
+
+# build artifacts (upstream PyInstaller spec is Windows-only and unused here)
+/build/
+/dist/
+*.spec.bak
+
+# editor / OS
+.idea/
+.vscode/
+.DS_Store
