@@ -33,9 +33,10 @@ the Proton prefix and the game directory on Linux. See
 ## Quick start
 
 ```bash
-# 1. Install dependencies (host-side Python, NOT Proton).
-#    Works the same whether you cloned the repo or just copied the folder.
-cd /path/to/LimbusModLoader-Linux/loader
+# 1. Get the code and install dependencies (host-side Python, NOT Proton).
+#    Already have the folder? Skip the clone and just cd into it.
+git clone https://github.com/ChouXin697/LimbusModLoader-Linux.git
+cd LimbusModLoader-Linux/loader
 python3 -m venv venv-linux
 venv-linux/bin/pip install -r requirements-linux.txt
 

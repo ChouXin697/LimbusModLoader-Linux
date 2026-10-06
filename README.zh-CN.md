@@ -31,9 +31,10 @@
 ## 快速开始
 
 ```bash
-# 1. 安装依赖（用宿主机的 Python，不是 Proton 里的）
-#    无论你是 clone 下来的还是直接拷贝文件夹，都一样
-cd /你的路径/LimbusModLoader-Linux/loader
+# 1. 取代码并装依赖（用宿主机的 Python，不是 Proton 里的）
+#    已经有这个文件夹了？跳过 clone，直接 cd 进去即可
+git clone https://github.com/ChouXin697/LimbusModLoader-Linux.git
+cd LimbusModLoader-Linux/loader
 python3 -m venv venv-linux
 venv-linux/bin/pip install -r requirements-linux.txt
 
