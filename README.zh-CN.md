@@ -31,9 +31,9 @@
 ## 快速开始
 
 ```bash
-# 1. 取代码并装依赖（用宿主机的 Python，不是 Proton 里的）
-git clone <本仓库地址> LimbusModLoader-Linux
-cd LimbusModLoader-Linux/loader
+# 1. 安装依赖（用宿主机的 Python，不是 Proton 里的）
+#    无论你是 clone 下来的还是直接拷贝文件夹，都一样
+cd /你的路径/LimbusModLoader-Linux/loader
 python3 -m venv venv-linux
 venv-linux/bin/pip install -r requirements-linux.txt
 
@@ -59,6 +59,10 @@ docs/en/ , docs/zh-CN/  双语文档（索引见下）
 LICENSE                 GPL-3.0，继承自上游
 ```
 
+`loader/` 是上游的 **Linux 相关子集**，不是完整镜像：Windows 专有的构建工具（`main.spec`、
+`install_deps.ps1`、Go bootloader、发布 workflow）都省略了，因为从源码运行都不需要它们。
+若要构建 Windows 版 `main.exe`，请直接用上游仓库。
+
 ## 文档索引
 
 | # | 中文 | English |
@@ -82,8 +86,15 @@ LICENSE                 GPL-3.0，继承自上游
 - Lunartique 格式的 `*.zip` 会被转成 `*.carra2` **并删除原 zip**——请自己留好每份下载的压缩包。
 - 第三方站点下的老 mod 可能静默失效（bundle 哈希过期）或直接崩溃（序列化布局不兼容），见[文档 4](docs/zh-CN/04-模组格式与取证.md)。
 - 部分地区连不上 Project Moon 的内容 CDN，会导致游戏**根本进不去**，与 mod 无关，见[文档 3](docs/zh-CN/03-疑难排查.md#开始按钮按不了)。
+- **没有 CI，也没有测试集。** 验证是手工的——导入模块图、解析路径、在下述环境实机运行。请把它当作
+  「人工验证过」，而不是「穷尽验证过」。
+- **Windows 依然可用。** `platform_paths.py` 保留了注册表 / `%APPDATA%` 分支，因此 `loader/` 在
+  Windows 上也是可直接替换的；只是这里只实测了 Linux 一侧。
 
 ## 致谢与许可
 
 上游加载器由 LEAGUE-OF-NINE 团队（`@myssal`、`@zenocara`、`@qifeetrying`）开发 ——
 <https://github.com/LEAGUE-OF-NINE/LimbusModLoader>。本移植版及文档沿用同一 **GPL-3.0** 许可（见 [LICENSE](LICENSE)）。
+
+**这是上游的修改版。** 全部改动列在 [`loader/linux-port.diff`](loader/linux-port.diff)，说明见
+[文档 2](docs/zh-CN/02-工作原理与移植改造.md)；最近修改日期 2026-10-06。

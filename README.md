@@ -33,9 +33,9 @@ the Proton prefix and the game directory on Linux. See
 ## Quick start
 
 ```bash
-# 1. Get the code and install dependencies (host-side Python, NOT Proton)
-git clone <this-repo> LimbusModLoader-Linux
-cd LimbusModLoader-Linux/loader
+# 1. Install dependencies (host-side Python, NOT Proton).
+#    Works the same whether you cloned the repo or just copied the folder.
+cd /path/to/LimbusModLoader-Linux/loader
 python3 -m venv venv-linux
 venv-linux/bin/pip install -r requirements-linux.txt
 
@@ -60,6 +60,11 @@ loader/                 Linux-adapted loader source (drop-in)
 docs/en/ , docs/zh-CN/  bilingual documentation (see index below)
 LICENSE                 GPL-3.0, inherited from upstream
 ```
+
+`loader/` is the **Linux-relevant subset** of upstream, not a full mirror: the Windows-only build
+tooling (`main.spec`, `install_deps.ps1`, the Go bootloader, the release workflows) is omitted
+because none of it is needed to run from source. To build the Windows `main.exe` instead, use
+upstream directly.
 
 ## Documentation
 
@@ -88,9 +93,17 @@ LICENSE                 GPL-3.0, inherited from upstream
   serialization layout). See [doc 4](docs/en/04-mod-formats.md).
 - Some regions cannot reach Project Moon's content CDN, which prevents the game from starting
   at all — unrelated to mods. See [doc 3](docs/en/03-troubleshooting.md#the-start-button-does-nothing).
+- **No CI and no test suite.** Verification is manual — importing the module graph, resolving paths,
+  and live runs on the environment below. Treat this as hand-tested, not exhaustively validated.
+- **Windows still works.** `platform_paths.py` keeps the registry / `%APPDATA%` branches, so
+  `loader/` is a drop-in replacement on Windows as well; only the Linux path has been exercised here.
 
 ## Credits & license
 
 Upstream loader by the LEAGUE-OF-NINE team (`@myssal`, `@zenocara`, `@qifeetrying`) —
 <https://github.com/LEAGUE-OF-NINE/LimbusModLoader>. This port and the documentation are
 distributed under the same **GPL-3.0** license (see [LICENSE](LICENSE)).
+
+**This is a modified version of upstream.** The changes are enumerated in
+[`loader/linux-port.diff`](loader/linux-port.diff) and explained in
+[doc 2](docs/en/02-how-it-works.md); last modified 2026-10-06.
